@@ -1,0 +1,87 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: tripinsights/poi
+spec:
+  replicas: 1
+  selector:
+    matchLabels:
+      app: tripinsights/poi
+  template:
+    metadata:
+      labels:
+        app: tripinsights/poi
+    spec:
+      nodeSelector:
+        "kubernetes.io/os": linux
+      containers:
+      - name: tripinsights/poi
+        image: registryylw2763.azurecr.io/tripinsights/poi:latest
+        env:
+        - name: ALLOW_EMPTY_PASSWORD
+          value: "yes"
+        resources:
+          requests:
+            cpu: 100m
+            memory: 128Mi
+          limits:
+            cpu: 250m
+            memory: 256Mi
+        ports:
+        - containerPort: 80
+          name: poi
+---
+apiVersion: v1
+kind: Service
+metadata:
+  name: tripinsights/poi
+spec:
+  ports:
+  - port: 8000
+  selector:
+    app: tripinsights/poi
+---
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: tripinsights/tripviewer
+spec:
+  replicas: 1
+  selector:
+    matchLabels:
+      app: tripinsights/tripviewer
+  template:
+    metadata:
+      labels:
+        app: tripinsights/tripviewer
+    spec:
+      nodeSelector:
+        "kubernetes.io/os": linux
+      containers:
+      - name: tripinsights/tripviewer
+        image: registryylw2763.azurecr.io/tripinsights/tripviewer:latest
+        resources:
+          requests:
+            cpu: 100m
+            memory: 128Mi
+          limits:
+            cpu: 250m
+            memory: 256Mi
+        ports:
+        - containerPort: 80
+        env:
+        - name: tripinsights/userprofile
+          value: "tripinsights/userprofile"
+        - name: tripinsights/trips
+          vaule: "tripinsights/trips"
+---
+apiVersion: v1
+kind: Service
+metadata:
+  name: tripinsights/tripviewer
+spec:
+  type: LoadBalancer
+  ports:
+  - port: 80
+  selector:
+    app: tripinsights/tripviewer

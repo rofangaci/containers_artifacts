@@ -1,0 +1,1 @@
+hacker@Azure:~$ az aks show -g teamResources -n akscluster1  |grep -i identity

@@ -1,0 +1,3 @@
+Ref link:
+
+ az aks show -g teamResources -n myMIAKSCluster --query “identity”

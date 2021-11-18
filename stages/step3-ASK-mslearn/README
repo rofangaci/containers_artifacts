@@ -1,0 +1,30 @@
+############# work in hacker portal ####
+hacker@Azure:~$ kubectl get nodes
+#error: You must be logged in to the server (the server has asked for the client to provide credentials)
+hacker@Azure:~$ az aks get-credentials --resource-group teamResources --name myAKSCluster
+#Merged "myAKSCluster" as current context in /home/hacker/.kube/config
+hacker@Azure:~$ kubectl get nodes
+#NAME                                STATUS   ROLES   AGE   VERSION
+#aks-nodepool1-11752595-vmss000000   Ready    agent   9h    v1.20.9
+#aks-nodepool1-11752595-vmss000001   Ready    agent   9h    v1.20.9
+#aks-nodepool1-11752595-vmss000002   Ready    agent   9h    v1.20.9
+
+#Create yaml deployment file
+# refer to : https://docs.microsoft.com/en-us/azure/aks/kubernetes-walkthrough
+
+
+#How does two app service in k8s connect to each other
+#Accessing the Service Kubernetes supports 2 primary modes of finding a Service - environment variables and DNS.
+#refer to this link: https://kubernetes.io/docs/concepts/services-networking/connect-applications-service/
+
+#Inspect azure vote app
+#kubectl describe svc azure-vote-back
+#kubectl get pods -l app=azure-vote-back -o wide    ##-l :  use label in yaml, selector using label as well.
+
+#reference link: https://kubernetes.io/docs/concepts/services-networking/connect-applications-service/
+#check to see if a DNS cluster addon service is running on the cluster
+kubectl get services kube-dns --namespace=kube-system
+
+#NAME       TYPE        CLUSTER-IP   EXTERNAL-IP   PORT(S)         AGE
+#kube-dns   ClusterIP   10.0.0.10    <none>        53/UDP,53/TCP   8m
+
